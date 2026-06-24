@@ -32,6 +32,7 @@
                             id="starting-amount"
                             name="starting-amount"
                             required
+                            value="15000"
                         />
                     </div>
                     <!-- <p class="text-red-500">
@@ -57,6 +58,7 @@
                             placeholder="0.00"
                             id="additional-contribution"
                             name="additional-contribution"
+                            value="3000"
                         />
                     </div>
                 </div>
@@ -72,6 +74,7 @@
                             id="time-amount"
                             name="time-amount"
                             required
+                            value="60"
                         />
                         <select
                             id="time-amount-period"
@@ -101,6 +104,7 @@
                             id="return-rate"
                             name="return-rate"
                             required
+                            value="5"
                         />
                         <select
                             id="evaluation-period"
@@ -130,6 +134,7 @@
                             id="tax-rate"
                             name="tax-rate"
                             required
+                            value="15"
                         />
                     </div>
                 </div>
@@ -151,14 +156,14 @@
                 </button>
             </div>
         </aside>
-        <main class="h-full">
-            <section id="charts-container">
-                <div class="h-[36dvh]">
-                    <p>Resultado Final</p>
+        <main class="grid row-span-2 col-span-2">
+            <section id="charts-container" class="h-full">
+                <div class="h-[36%] flex flex-col items-center mb-10">
+                    <p class="font-bold text-lg">Resultado Final</p>
                     <canvas id="final-money-distribution"></canvas>
                 </div>
-                <div class="h-[56dvh]">
-                    <p>Progressão</p>
+                <div class="h-[56%] flex flex-col items-center">
+                    <p class="font-bold text-lg">Progressão</p>
                     <canvas id="progression"></canvas>
                 </div>
             </section>
