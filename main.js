@@ -1,8 +1,14 @@
 import { generateReturnsArray } from './src/investmentGoals.js';
+import { Chart } from 'chart.js/auto';
 
 const investmentForm = document.getElementById('investment-form');
 // const calculateButton = document.getElementById('calculate-results');
 const clearFormButton = document.getElementById('clear-form');
+const finalMoneyChart = document.getElementById('final-money-distribution');
+const progressionChart = document.getElementById('progression');
+
+let doughnutChartReference = {};
+let progressionChartReference = {};
 
 function validateInput(event) {
     if (event.target.value.trim() === '') {
@@ -35,12 +41,18 @@ function validateInput(event) {
     }
 }
 
+function formatCurrency(value) {
+    return value.toFixed(2);
+}
+
 function renderProgression(event) {
     event.preventDefault();
 
     if (document.querySelector('.error')) {
         return;
     }
+
+    resetCharts();
 
     const startingAmount = Number(
         document.getElementById('starting-amount').value.replace(',', '.'),
@@ -75,13 +87,78 @@ function renderProgression(event) {
         returnRatePeriod,
     );
 
-    console.log(returnsArray);
-}
+    const finalInvestimentObject = returnsArray[returnsArray.length - 1];
 
-for (const formElement of investmentForm) {
-    if (formElement.tagName === 'INPUT' && formElement.hasAttribute('name')) {
-        formElement.addEventListener('blur', validateInput);
-    }
+    doughnutChartReference = new Chart(finalMoneyChart, {
+        type: 'doughnut',
+        data: {
+            labels: ['Total investido', 'Rendimento', 'Imposto'],
+            datasets: [
+                {
+                    // label: 'Meu primeiro gráfico',
+                    data: [
+                        formatCurrency(finalInvestimentObject.investedAmount),
+                        formatCurrency(
+                            finalInvestimentObject.totalInterestReturns *
+                                (1 - taxRate / 100),
+                        ),
+                        formatCurrency(
+                            finalInvestimentObject.totalInterestReturns *
+                                (taxRate / 100),
+                        ),
+                    ],
+                    backgroundColor: [
+                        'rgb(255,99,132)',
+                        'rgb(255,205,86)',
+                        'rgb(54,162,235)',
+                    ],
+                    hoverOffset: 4,
+                },
+            ],
+        },
+    });
+
+    progressionChartReference = new Chart(progressionChart, {
+        type: 'bar',
+        data: {
+            labels: returnsArray.map(
+                (investmentObject) => investmentObject.month,
+            ),
+            datasets: [
+                {
+                    label: 'Total Investido',
+                    data: returnsArray.map((investmentObject) =>
+                        formatCurrency(investmentObject.investedAmount),
+                    ),
+                    backgroundColor: 'rgb(255,99,132)',
+                },
+                {
+                    label: 'Retorno do Investimento',
+                    data: returnsArray.map((investmentObject) =>
+                        formatCurrency(investmentObject.interestReturns),
+                    ),
+                    backgroundColor: 'rgb(54,162,235)',
+                },
+            ],
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Plugin Title',
+                },
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                },
+            },
+        },
+    });
 }
 
 function clearForm() {
@@ -92,6 +169,8 @@ function clearForm() {
     // investmentForm['tax-rate'].value = '';
 
     investmentForm.reset();
+
+    resetCharts();
 
     // const errorInputContainers = document.querySelectorAll('.error');
 
@@ -104,6 +183,26 @@ function clearForm() {
         e.classList.remove('error');
         e.parentElement.querySelector('p').remove();
     });
+}
+
+function isObjectEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}
+
+function resetCharts() {
+    if (
+        !isObjectEmpty(doughnutChartReference) &&
+        !isObjectEmpty(progressionChartReference)
+    ) {
+        doughnutChartReference.destroy();
+        progressionChartReference.destroy();
+    }
+}
+
+for (const formElement of investmentForm) {
+    if (formElement.tagName === 'INPUT' && formElement.hasAttribute('name')) {
+        formElement.addEventListener('blur', validateInput);
+    }
 }
 
 investmentForm.addEventListener('submit', renderProgression);
