@@ -205,6 +205,7 @@ for (const formElement of investmentForm) {
     }
 }
 
-investmentForm.addEventListener('submit', renderProgression);
 // calculateButton.addEventListener('click', renderProgression);
+
+// investmentForm.addEventListener('submit', renderProgression); // Comentado temporariamente, para trabalhar na Branche 'tabela'
 clearFormButton.addEventListener('click', clearForm);
