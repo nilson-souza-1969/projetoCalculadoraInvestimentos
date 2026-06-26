@@ -14,7 +14,7 @@ const columnsArray = [
     {
         columnLabel: 'Mês',
         accessor: 'month',
-        format: (numberInfo) => formatCurrencyToTable(numberInfo),
+        format: (numberInfo) => numberInfo,
     },
     {
         columnLabel: 'Total Investido',
